@@ -4,10 +4,10 @@ This project is part of an internship in the Internet of Things (IoT) module and
 ## Project Overview
 The goal of the project is to implement an IoT system consisting of the following components:
 
-1. **Smart Contract (completed): A Solidity smart contract controls the state of an actuator (LED), which is controlled by an ESP32 microcontroller module.
-2. **Actuator Module (in development): An ESP32-DevKitC that controls the LED and interacts with the smart contract.
-3. **Sensor Module (in development): An ESP32-based sensor module that collects environmental data and publishes it via MQTT.
-4. **Communication Interfaces: MQTT and BLE for communication between modules and control via a smartphone app.
+1. **Smart Contract (completed)**: A Solidity smart contract controls the state of an actuator (LED), which is controlled by an ESP32 microcontroller module.
+2. **Actuator Module (in development)**: An ESP32-DevKitC that controls the LED and interacts with the smart contract.
+3. **Sensor Module (in development)**: An ESP32-based sensor module that collects environmental data and publishes it via MQTT.
+4. **Communication Interfaces**: MQTT and BLE for communication between modules and control via a smartphone app.
 
 ## Installation und Einrichtung
 
