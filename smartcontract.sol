@@ -6,9 +6,8 @@ contract LedControl {
     address public owner;
     uint256 public fee; // Fee for setting the LED
 
-/// here die constructo
-
-  owner = msg.sender; // Set the deployer as the owner
+    constructor(uint256 _fee) {
+        owner = msg.sender; // Set the deployer as the owner
         fee = _fee; // Set the fee for setting the LED
 
          // Function to set the LED status (write operation)
