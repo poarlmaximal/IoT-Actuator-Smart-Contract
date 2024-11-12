@@ -28,3 +28,10 @@ Der Smart Contract ist fertiggestellt und implementiert die grundlegenden Funkti
 - **kill()**: Entfernt den Contract aus der Blockchain.
 
 Der Contract ist für das Sepolia Testnetzwerk vorbereitet und wird in der Entwicklungsumgebung [Remix](https://remix.ethereum.org/) getestet. Eine detaillierte Anleitung zur Verwendung und Testung findet sich in [todo/doing]. 
+
+
+## Todo: 
+bis 17.11. 16:30 - 18:30 Uhr
+- MQTT anschauen, damit wir das sattelfest sind (Wofür wir das brauchen, wie das funktioniert)
+- mainmodule.py und micropython.py verstehen
+- erste Ideen wie wir das verknüpfen
