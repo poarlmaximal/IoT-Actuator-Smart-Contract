@@ -31,7 +31,6 @@ Der Contract ist für das Sepolia Testnetzwerk vorbereitet und wird in der Entwi
 
 
 ## Todo: 
-bis 17.11. 16:30 - 18:30 Uhr
-- MQTT anschauen, damit wir das sattelfest sind (Wofür wir das brauchen, wie das funktioniert)
-- mainmodule.py und micropython.py verstehen
-- erste Ideen wie wir das verknüpfen
+bis 20.11. 16:00 - 18:00 Uhr
+- Readme aktualisieren
+- micropython.py verstehen und je nach chain eintrag die LED setzen und die Aktualisierung über MQTT publishen (idealerweise fügen wir das dann noch sinnvoll ins main ein)
