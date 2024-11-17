@@ -6,12 +6,27 @@ import time
 import paho.mqtt.client as mqtt
 import config  # Importiere die Konfigurationsdatei
 
+# Callback-Funktion für eingehende MQTT-Nachrichten
+def on_message(client, userdata, msg):
+    message = msg.payload.decode()
+    print(f"Nachricht empfangen: {message}")
+    # Check for reset command from the master module
+    if message == f"{config.DEVICE_NAME} reset.":
+        led.value(0)  # Turn off the LED
+        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is reset.")
+    elif message == f"{config.DEVICE_NAME} on.":
+        led.value(1)  # Turn on the LED
+        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is on.")
+    elif message == f"{config.DEVICE_NAME} off.":
+        led.value(0)  # Turn off the LED
+        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is off.")
+
 # Setup für das LED-Pin
 led = Pin(config.PIN_LED, Pin.OUT)  # Verwende den Pin aus der Konfiguration
 
 # MQTT-Client initialisieren
 mqtt_client = mqtt.Client()
-mqtt_client.on_message = on_message # Problem zu lösen: on_message eventuelle Mitnahme von Variablen 
+mqtt_client.on_message = on_message 
 
 # Funktion zur WLAN-Verbindung
 def connect_wifi():
@@ -31,22 +46,6 @@ def connect_mqtt():
     mqtt_client.connect(config.MQTT_BROKER_IP_ADDRESS)
     mqtt_client.subscribe("iot/master")  # Abonniere den Master-Kanal
     mqtt_client.loop_start()  # Starte den MQTT-Loop
-
-# Callback-Funktion für eingehende MQTT-Nachrichten
-def on_message(client, userdata, msg):
-    message = msg.payload.decode()
-    print(f"Nachricht empfangen: {message}")
-    # Check for reset command from the master module
-    if message == f"{config.DEVICE_NAME} reset.":
-        led.value(0)  # Turn off the LED
-        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is reset.")
-    elif message == f"{config.DEVICE_NAME} on.":
-        led.value(1)  # Turn on the LED
-        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is on.")
-    elif message == f"{config.DEVICE_NAME} off.":
-        led.value(0)  # Turn off the LED
-        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is off.")
-
 
 # Hauptfunktion
 def main():
