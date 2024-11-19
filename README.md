@@ -34,15 +34,15 @@ Der Contract ist für das Sepolia Testnetzwerk vorbereitet und wird in der Entwi
 - **Initialisierung**: Das Skript importiert benötigte Bibliotheken und eine Konfigurationsdatei. Das LED wird als Ausgangspin konfiguriert.
 - **WLAN-Verbindung**: Es stellt eine Verbindung zum WLAN her, indem es SSID und Passwort aus der Konfigurationsdatei verwendet. Eine Wartezeit ist eingebaut, bis die Verbindung erfolgreich ist.
 - **MQTT-Kommunikation**:
-- Ein MQTT-Client wird initialisiert und eine Callback-Funktion für eingehende Nachrichten definiert.
-- Die Callback-Funktion on_message() ermöglicht das Ein- und Ausschalten des LEDs basierend auf den empfangenen MQTT-Nachrichten.
-- Der MQTT-Client verbindet sich mit dem Broker, abonniert einen Kanal für Nachrichten und startet eine Schleife zur Nachrichtenbehandlung.
+  - Ein MQTT-Client wird initialisiert und eine Callback-Funktion für eingehende Nachrichten definiert.
+  - Die Callback-Funktion on_message() ermöglicht das Ein- und Ausschalten des LEDs basierend auf den empfangenen MQTT-Nachrichten.
+  - Der MQTT-Client verbindet sich mit dem Broker, abonniert einen Kanal für Nachrichten und startet eine Schleife zur Nachrichtenbehandlung.
 - **Feedback über MQTT**:
-- Sendet eine Bereitschaftsnachricht, sobald das WLAN und MQTT konfiguriert sind.
-- Während der Hauptfunktionsschleife wird der LED-Status (ein/aus) abwechselnd geändert und der Status wird nach jedem Schritt zurück an den MQTT-Broker gesendet.
+  - Sendet eine Bereitschaftsnachricht, sobald das WLAN und MQTT konfiguriert sind.
+  - Während der Hauptfunktionsschleife wird der LED-Status (ein/aus) abwechselnd geändert und der Status wird nach jedem Schritt zurück an den MQTT-Broker gesendet.
 - **Main-Schleifensteuerung**:
-- Eine Schleife führt die Ein- und Ausschaltung des LEDs durch, begleitet von Statusmeldungen, und zählt bis zu einer maximalen Anzahl von Durchläufen (30).
-- Nach Beendigung der Schleife sendet das Gerät eine finale Statusmeldung.
+  - Eine Schleife führt die Ein- und Ausschaltung des LEDs durch, begleitet von Statusmeldungen, und zählt bis zu einer maximalen Anzahl von Durchläufen (30).
+  - Nach Beendigung der Schleife sendet das Gerät eine finale Statusmeldung.
 
 
 ------------------------------
