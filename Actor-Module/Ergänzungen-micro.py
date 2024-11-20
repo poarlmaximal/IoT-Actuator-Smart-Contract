@@ -79,10 +79,7 @@ def toggle_led(state):
 
 # Main loop
 def main():
-    if not connect_wifi():  # Connect to Wi-Fi
-        print("Wi-Fi connection failed. Exiting...")
-        return
-
+    connect_wifi()
     print("Starting main loop...")
     while True:
         try:
