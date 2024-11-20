@@ -47,6 +47,44 @@ def connect_mqtt():
     mqtt_client.subscribe("iot/master")  # Abonniere den Master-Kanal
     mqtt_client.loop_start()  # Starte den MQTT-Loop
 
+# Function to read the LED state from the smart contract
+def read_led_state():
+    headers = {'Content-Type': 'application/json'}
+
+    # JSON-RPC payload to call readLed function
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "eth_call",
+        "params": [{
+            "to": CONTRACT_ADDRESS,
+            "data": '0x' + FUNCTION_SIGNATURE
+        }, "latest"],
+        "id": 1
+    }
+
+    try:
+        # Send the request to the Ethereum node
+        response = urequests.post(RPC_ENDPOINT, headers=headers, json=payload)
+        if response.status_code == 200:
+            result = response.json()
+            led_state = int(result.get('result', '0x0'), 16)  # Convert hex result to int
+            response.close()  # Ensure response is closed
+            return led_state
+        else:
+            print(f"Error reading LED state: {response.status_code} {response.text}")
+            response.close()
+            return None
+    except Exception as e:
+        print(f"Exception occurred while reading LED state: {e}")
+        return None
+
+# Function to toggle the LED based on the state
+def toggle_led(state):
+    if state == 1:
+        led.value(1)  # Turn the LED on
+    elif state == 0:
+        led.value(0)  # Turn the LED off
+
 # Hauptfunktion
 def main():
     connect_wifi()
