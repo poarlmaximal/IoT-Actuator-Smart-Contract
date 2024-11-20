@@ -7,16 +7,16 @@ contract LedControl {
     uint256 public fee; // Fee for setting the LED
 
     // Konstruktor, um den Besitzer des Contracts zu setzen
-    constructor() payable {
+    constructor(uint256 _fee) payable {
         owner = msg.sender;
         fee = _fee; // Set the fee for setting the LED
-        
     }
 
     // Funktion zum Ein- und Ausschalten der LED
     // Erwartet: 1 für an, 0 für aus
+    
     function setLed(int8 newOn) public payable {
-        require(msg.value >= fee, "Insufficient fee sent for setting LED");
+    require(msg.value >= fee, "Insufficient fee sent for setting LED");
         require(newOn == 0 || newOn == 1, "Ungueltiger Wert fuer LED");
         ledStatus = newOn;
     }
