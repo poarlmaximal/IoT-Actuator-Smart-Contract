@@ -28,18 +28,25 @@ led = Pin(config.PIN_LED, Pin.OUT)  # Verwende den Pin aus der Konfiguration
 mqtt_client = mqtt.Client()
 mqtt_client.on_message = on_message 
 
-# Funktion zur WLAN-Verbindung
+# Function to connect to Wi-Fi
 def connect_wifi():
-    wlan = network.WLAN(network.STA_IF)  # Station Interface
-    wlan.active(True)
-    wlan.connect(config.WIFI_SSID, config.WIFI_PASSWORD)
-
-    # Warte, bis die Verbindung hergestellt ist
-    while not wlan.isconnected():
-        print("Warten auf WLAN-Verbindung...")
+    wlan = network.WLAN(network.STA_IF)  # Create a WLAN object in station mode
+    wlan.active(True)  # Activate the WLAN interface
+    wlan.connect(config.WIFI_SSID, config.WIFI_PASSWORD)  # Connect to the Wi-Fi network
+    
+    # Wait for the connection to establish
+    attempt = 0
+    while not wlan.isconnected() and attempt < 15:
+        print("Connecting to Wi-Fi...")
         time.sleep(1)
+        attempt += 1
 
-    print("WLAN verbunden:", wlan.ifconfig())
+    if wlan.isconnected():
+        print("Connected to Wi-Fi:", wlan.ifconfig())  # Print the IP address and other info
+        return True
+    else:
+        print("Failed to connect to Wi-Fi.")
+        return False
 
 # Verbinde zum MQTT-Broker und abonniere den Kanal
 def connect_mqtt():
