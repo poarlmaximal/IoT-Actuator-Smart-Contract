@@ -47,6 +47,5 @@ Der Contract ist für das Sepolia Testnetzwerk vorbereitet und wird in der Entwi
 
 ------------------------------
 ## Todo: 
-bis 20.11. 16:00 - 18:00 Uhr
-- Readme aktualisieren
-- micropython.py verstehen und je nach chain eintrag die LED setzen und die Aktualisierung über MQTT publishen (idealerweise fügen wir das dann noch sinnvoll ins main ein)
+bis 24.11. 13:00 - 15:00 Uhr
+- Smart Contract nochmal neu deployen und alles testen
