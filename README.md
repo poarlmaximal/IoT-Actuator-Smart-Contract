@@ -47,5 +47,6 @@ Der Contract ist für das Sepolia Testnetzwerk vorbereitet und wird in der Entwi
 
 ------------------------------
 ## Todo: 
-bis 24.11. 13:00 - 15:00 Uhr
-- Smart Contract nochmal neu deployen und alles testen
+bis 02.12. 18:00 - 19:00 Uhr
+- Config.py lokal mit den korrekten Credentials befüllen und dann led-blinking-test.py testen und anschließend main.py testen.
+- Über Mosquitto mitschneiden ? 
