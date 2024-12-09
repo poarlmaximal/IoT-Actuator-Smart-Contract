@@ -3,7 +3,7 @@
 from machine import Pin
 from machine import RTC
 from network import WLAN
-from time import sleep
+from time import sleep, time
 from umqtt.simple import MQTTClient
 import esp32
 import config
@@ -17,7 +17,7 @@ client = None
 # function for establishing wifi-connection
 def connect_wifi():
     if not wlan.isconnected():
-        print('connecting to wlan')
+        print('Lost Wi-Fi connection. Reconnecting...')
         wlan.connect(config.WIFI_SSID, config.WIFI_PASSWORD)
         while not wlan.isconnected():
             pass
@@ -59,7 +59,19 @@ def on_message(topic, msg):
 def connect_mqtt():
     global client
     print('connecting to mqtt')
-    client = MQTTClient(config.MQTT_CLIENT_NAME, config.MQTT_BROKER, config.MQTT_PORT)
+    client = MQTTClient(
+        config.MQTT_CLIENT_NAME,
+        config.MQTT_BROKER,
+        config.MQTT_PORT,
+        keepalive=60
+    )
+    # Setting Last-Will Message
+    client.set_last_will(
+        config.MQTT_TOPIC_PUB,
+        "Device disconnected unexpectedly",
+        retain=False,
+        qos=1
+    )
     client.set_callback(on_message)
     try:
         client.connect()
@@ -86,9 +98,19 @@ while True:
     try:
         connect_wifi()
         # Verbindung zum MQTT-Server aufbauen und das Ready-Signal publishen
+        mqtt_reconnect_start = time()
         if client is None:
+            print("Lost MQTT connection. Reconnecting...")
             client = connect_mqtt()
-            if client is None:
+            mqtt_reconnect_end = time()
+            reconnect_duration = mqtt_reconnect_end - mqtt_reconnect_start
+            if client is not None:
+                client.publish(
+                    config.MQTT_TOPIC_PUB, 
+                    f"Connection re-established after a timeout of {reconnect_duration:.2f} seconds"
+                )
+                print(f"Connection re-established after {reconnect_duration:.2f} seconds.")
+            else:
                 print("MQTT client is not initialized.")
         if client:
             client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_READY)
@@ -118,7 +140,17 @@ while True:
                     sleep(5)  # Sleep for 5 seconds after handling reset
                 except Exception as e:
                     print("Error during reset publish:", e)
+                    print("Lost MQTT connection. Reconnecting...")
+                    mqtt_reconnect_start = time()
                     client = connect_mqtt()
+                    mqtt_reconnect_end = time()
+                    reconnect_duration = mqtt_reconnect_end - mqtt_reconnect_start
+                    if client is not None:
+                        client.publish(
+                            config.MQTT_TOPIC_PUB, 
+                            f"Connection re-established after a timeout of {reconnect_duration:.2f} seconds"
+                        )
+                        print(f"Connection re-established after {reconnect_duration:.2f} seconds.")
 
             datetime = rtc.datetime()
             fahrenheit_temp = esp32.raw_temperature()
