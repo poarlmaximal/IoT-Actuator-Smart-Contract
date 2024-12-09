@@ -1,3 +1,4 @@
+#main.py
 # ------------- imports ----------------------
 
 from machine import Pin
@@ -59,7 +60,15 @@ def on_message(topic, msg):
 def connect_mqtt():
     global client
     print('connecting to mqtt')
-    client = MQTTClient(config.MQTT_CLIENT_NAME, config.MQTT_BROKER, config.MQTT_PORT)
+    client = MQTTClient(config.MQTT_CLIENT_NAME, config.MQTT_BROKER, config.MQTT_PORT, keepalive=60)
+    # Setting Last-Will Message
+    client.set_last_will(
+        config.MQTT_TOPIC_PUB,
+        "Actor disconnected unexpectedly",
+        retain=False,
+        qos=1
+    )
+    print("LWT set: Topic:", config.MQTT_TOPIC_PUB, "Message: Actor disconnected unexpectedly")
     client.set_callback(on_message)
     try:
         client.connect()
@@ -67,6 +76,8 @@ def connect_mqtt():
         if client:
             client.subscribe(config.MQTT_TOPIC_SUB)
             print(f"Subscribed to topic: {config.MQTT_TOPIC_SUB}")
+            client.publish(config.MQTT_TOPIC_PUB, "Actor (re)connected successfully")
+            print("Actor (re)connected successfully")
     except Exception as e:
         print("MQTT-Verbindung nicht erfolgreich:", e)
         client = None
@@ -140,3 +151,4 @@ while True:
     except Exception as e:
         print("Ein Fehler ist aufgetreten:", e)
         sleep(5)
+      
