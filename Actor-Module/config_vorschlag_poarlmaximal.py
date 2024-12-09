@@ -8,7 +8,7 @@ PIN_LED = 13
 
 # Wi-Fi
 WIFI_SSID = 'MagentaWLAN-6U5D'
-WIFI_PASSWORD = '66021647382515032867'
+WIFI_PASSWORD = '.'
 
 # MQTT
 MQTT_BROKER = 'test.mosquitto.org'
