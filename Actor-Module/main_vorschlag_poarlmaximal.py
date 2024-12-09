@@ -70,30 +70,32 @@ rtc = RTC()
 global led
 led = Pin(13, Pin.OUT)
 
-# Verbindung zum Wi-Fi aufbauen
-wlan = WLAN()
-wlan.active(True)
-connect_wifi()
+while True: 
 
-# Verbindung zum MQTT-Server aufbauen und das Ready-Signal publishen
-global client
-client = connect_mqtt()
-client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_READY)
-
-# LED entsprechend Blockchain LED-State ändern und Debugging-Ausgaben: Real-Time, ESP-Temperatur, LED-Status aus dem Sepolia-Netzwerk
-while wlan.isconnected():
-    ledStatus = readLedStatus()
-
-    if ledStatus != led.value():
-        if ledStatus == 0:
-            led.value(0)
-            client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_OFF)
-        elif ledStatus == 1:
-            led.value(1)
-            client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_ON)
-        else:
-            print('irgendwas ist schief gegangen')
-
-    datetime = rtc.datetime()
-    print(str(datetime[4])+":"+str(datetime[5])+":"+str(datetime[6])+"\t"+str(esp32.raw_temperature())+"°F"+"\t"+str(ledStatus)+'\t'+str(led.value()))
-    sleep(10)
+    # Verbindung zum Wi-Fi aufbauen
+    wlan = WLAN()
+    wlan.active(True)
+    connect_wifi()
+    
+    # Verbindung zum MQTT-Server aufbauen und das Ready-Signal publishen
+    global client
+    client = connect_mqtt()
+    client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_READY)
+    
+    # LED entsprechend Blockchain LED-State ändern und Debugging-Ausgaben: Real-Time, ESP-Temperatur, LED-Status aus dem Sepolia-Netzwerk
+    while wlan.isconnected():
+        ledStatus = readLedStatus()
+    
+        if ledStatus != led.value():
+            if ledStatus == 0:
+                led.value(0)
+                client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_OFF)
+            elif ledStatus == 1:
+                led.value(1)
+                client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_ON)
+            else:
+                print('irgendwas ist schief gegangen')
+    
+        datetime = rtc.datetime()
+        print(str(datetime[4])+":"+str(datetime[5])+":"+str(datetime[6])+"\t"+str(esp32.raw_temperature())+"°F"+"\t"+str(ledStatus)+'\t'+str(led.value()))
+        sleep(10)
