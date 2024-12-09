@@ -7,7 +7,7 @@ DEVICE_NAME = 'Actor-1'
 PIN_LED = 13
 
 # Wi-Fi
-WIFI_SSID = 'MagentaWLAN-6U5D'
+WIFI_SSID = '.'
 WIFI_PASSWORD = '.'
 
 # MQTT
