@@ -53,7 +53,7 @@ def on_message(topic, msg):
 # establishing connection to MQTT Broker
 def connect_mqtt():
     print('connecting to mqtt')
-    client = MQTTClient(config.MQTT_CLIENT_NAME, config.MQTT_BROKER)
+    client = MQTTClient(config.MQTT_CLIENT_NAME, config.MQTT_BROKER, config.MQTT_PORT)
     client.set_callback(on_message)
     try:
         client.connect()
@@ -63,8 +63,7 @@ def connect_mqtt():
     client.subscribe(config.MQTT_TOPIC_SUB)
     return client
 
-# --------------- main --------------------- 
-
+# --------------- main ---------------------
 # initialisiere Real-Time-Clock und LED-Pin
 print("Hello World!")
 rtc = RTC()
@@ -84,18 +83,17 @@ client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_READY)
 # LED entsprechend Blockchain LED-State ändern und Debugging-Ausgaben: Real-Time, ESP-Temperatur, LED-Status aus dem Sepolia-Netzwerk
 while wlan.isconnected():
     ledStatus = readLedStatus()
-    
+
     if ledStatus != led.value():
-        if ledStatus == 0: 
+        if ledStatus == 0:
             led.value(0)
             client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_OFF)
-        elif ledStatus == 1: 
+        elif ledStatus == 1:
             led.value(1)
             client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_ON)
-        else: 
+        else:
             print('irgendwas ist schief gegangen')
-            
+
     datetime = rtc.datetime()
     print(str(datetime[4])+":"+str(datetime[5])+":"+str(datetime[6])+"\t"+str(esp32.raw_temperature())+"°F"+"\t"+str(ledStatus)+'\t'+str(led.value()))
     sleep(10)
-
