@@ -1,107 +1,119 @@
 # main.py
 
-from machine import Pin
-import network
-import time
-import paho.mqtt.client as mqtt
-import config  # Importiere die Konfigurationsdatei
+# ------------------ imports ------------------
+from machine import Pin, RTC, reset
+from network import WLAN
+from time import sleep
+from umqtt.simple import MQTTClient
+import esp32
+import config
+import urequests
+import ujson
 
-# Callback-Funktion für eingehende MQTT-Nachrichten
-def on_message(client, userdata, msg):
-    message = msg.payload.decode()
-    print(f"Nachricht empfangen: {message}")
-    # Check for reset command from the master module
-    if message == f"{config.DEVICE_NAME} reset.":
-        led.value(0)  # Turn off the LED
-        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is reset.")
-    elif message == f"{config.DEVICE_NAME} on.":
-        led.value(1)  # Turn on the LED
-        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is on.")
-    elif message == f"{config.DEVICE_NAME} off.":
-        led.value(0)  # Turn off the LED
-        client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is off.")
+# -------- declare and initialize global variables --------
+led = Pin(13, Pin.OUT)
+wlan = WLAN()
+client = None
 
-# Setup für das LED-Pin
-led = Pin(config.PIN_LED, Pin.OUT)  # Verwende den Pin aus der Konfiguration
-
-# MQTT-Client initialisieren
-mqtt_client = mqtt.Client()
-mqtt_client.on_message = on_message 
-
-# Function to connect to Wi-Fi
+# --------------- functions -------------------
+# function for establishing wifi-connection
 def connect_wifi():
-    wlan = network.WLAN(network.STA_IF)  # Create a WLAN object in station mode
-    wlan.active(True)  # Activate the WLAN interface
-    wlan.connect(config.WIFI_SSID, config.WIFI_PASSWORD)  # Connect to the Wi-Fi network
-    
-    # Wait for the connection to establish
-    attempt = 0
-    while not wlan.isconnected() and attempt < 15:
-        print("Connecting to Wi-Fi...")
-        time.sleep(1)
-        attempt += 1
+    global wlan
+    if not wlan.isconnected():
+        print('Connecting to WLAN...')
+        wlan.connect(config.WIFI_SSID, config.WIFI_PASSWORD)
+        while not wlan.isconnected():
+            pass
+    print("wlan.isconnected(): "+str(wlan.isconnected())+str(wlan.ifconfig()))
 
-    if wlan.isconnected():
-        print("Connected to Wi-Fi:", wlan.ifconfig())  # Print the IP address and other info
-        return True
-    else:
-        print("Failed to connect to Wi-Fi.")
-        return False
-
-# Verbinde zum MQTT-Broker und abonniere den Kanal
-def connect_mqtt():
-    mqtt_client.connect(config.MQTT_BROKER_IP_ADDRESS)
-    mqtt_client.subscribe("iot/master")  # Abonniere den Master-Kanal
-    mqtt_client.loop_start()  # Starte den MQTT-Loop
-
-# Function to read the LED state from the smart contract
-def read_led_state():
-    headers = {'Content-Type': 'application/json'}
-
-    # JSON-RPC payload to call readLed function
-    payload = {
-        "jsonrpc": "2.0",
-        "method": "eth_call",
-        "params": [{
-            "to": config.CONTRACT_ADDRESS,
-            "data": config.PRIVATE_KEY #'0x' + FUNCTION_SIGNATURE # Shroom meint: 0xc0e3178a?
-        }, "latest"],
-        "id": 1
-    }
-
+# function for reading ledStatus from blockchain (smart contract)
+def read_led_status():
+    led_status = 0
+    json_data = {'jsonrpc':'2.0','method':'eth_call','params':[{'to':config.CONTRACT_ADDRESS,'data': config.DATA},'latest'],'id':1}
+    json_payload = ujson.dumps(json_data)
+    headers = {'Content-Type':'application/json'}
     try:
-        # Send the request to the Ethereum node
-        response = urequests.post(config.RPC_URL, headers=headers, json=payload)
-        if response.status_code == 200:
-            result = response.json()
-            led_state = int(result.get('result', '0x0'), 16)  # Convert hex result to int
-            response.close()  # Ensure response is closed
-            return led_state
-        else:
-            print(f"Error reading LED state: {response.status_code} {response.text}")
-            response.close()
-            return None
+        response = urequests.post(config.RPC_URL, data=json_payload, headers=headers)
+        result = response.json().get('result')
+        led_status = int(result,16)
     except Exception as e:
-        print(f"Exception occurred while reading LED state: {e}")
-        return None
+        print("Error accessing the smart contract: ", e)
+    return led_status
 
-# Function to toggle the LED based on the state
-def toggle_led(state):
-    if state == 1:
-        led.value(1)  # Turn the LED on
-        mqtt_client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is on.")
-    elif state == 0:
-        led.value(0)  # Turn the LED off
-        mqtt_client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is off.")
+# function for reactions on messages
+def on_message(topic, msg):
+    global led
+    global client
+    # decode topic and message
+    topic_decoded = topic.decode('utf-8')
+    msg_decoded = msg.decode('utf-8')
+    print('Received message:', topic_decoded, msg_decoded)
+    if msg_decoded == config.MQTT_MASTER_RESET_COMMAND:
+        led.value(0)
+        client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_RESET, qos=1)
+        reset()
+        
 
-# Hauptfunktion
-def main():
-    connect_wifi()
-    connect_mqtt()
-    mqtt_client.publish(f"iot/{config.DEVICE_NAME}/status", f"{config.DEVICE_NAME} is ready.")
+# function for establishing the connection between MQTT-Client and MQTT-Broker
+def connect_mqtt():
+    global client
+    print('Connecting to MQTT...')
+    client = MQTTClient(config.MQTT_CLIENT_NAME, config.MQTT_BROKER, config.MQTT_PORT)
+    client.set_callback(on_message)
+    try:
+        client.connect()
+        print("MQTT connection initiated ...")
+        while not client:
+            pass
+        print("MQTT connection successful!")
+        client.subscribe(config.MQTT_TOPIC_SUB)
+    except Exception as e:
+        print("MQTT connection unsuccessful:",e)
     
-    current_state = read_led_state()
-    toggle_led(current_state)
-    
-if __name__ == "__main__":
-    main()
+
+# --------------- main ---------------------
+# initialize Real-Time Clock
+rtc = RTC()
+
+# Introduce a helper variable led_value = -1, 
+# so that on the very first run the state is published to the broker 
+# (regardless of the ledStatus from the Smart Contract)
+led_value = -1 
+
+while True:
+    try:
+        # Establish connection to Wi-Fi
+        wlan.active(True)
+        connect_wifi()
+        
+        # Establish connection to the MQTT server and publish the Ready signal
+        connect_mqtt()
+        client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_READY)
+        
+        # Change LED according to the Blockchain LED-State and debugging outputs: Real-Time, ESP temperature, LED status from the Sepolia network.
+        while wlan.isconnected():
+            
+            # respond to RESET message from the MQTT_BROKER
+            client.check_msg()
+            
+            # read the ledStatus from the Smart Contract
+            led_status = read_led_status()
+            
+            # respond to led_status changes
+            if led_status != led_value:
+                if led_status == 0:
+                    led.value(0)
+                    led_value = 0
+                    client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_OFF)
+                elif led_status == 1:
+                    led.value(1)
+                    led_value = 1
+                    client.publish(config.MQTT_TOPIC_PUB, config.MQTT_ACTOR_STATUS_ON)
+                else:
+                    print('Something went wrong...')
+            
+            datetime = rtc.datetime()
+            print(str(datetime[4])+":"+str(datetime[5])+":"+str(datetime[6])+"\t"+str(esp32.raw_temperature())+"°F"+"\t"+str(led_status)+'\t'+str(led.value()))
+            sleep(5)
+    except Exception as e:
+        print("An error has occurred:", e)
