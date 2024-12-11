@@ -2,18 +2,32 @@
 
 # Device Name of the actor module
 DEVICE_NAME = 'Actor-1'
+
 # Pin number for the LED
 PIN_LED = 13
-# Wi-Fi credentials
-WIFI_SSID = 'your_wifi_ssid'  # Replace with your Wi-Fi SSID
-WIFI_PASSWORD = 'your_wifi_password'  # Replace with your Wi-Fi password
-# MQTT Broker
-MQTT_BROKER_IP_ADDRESS = 'your_mqtt_broker_ip'  # Replace with your MQTT broker IP address
-# MetaMask: Address
-ADDRESS = '0x...'  # Replace with your MetaMask address
-# MetaMask: Private Key
-PRIVATE_KEY = '0x...'  # Replace with your MetaMask private key
-# Smart Contract Address
-CONTRACT_ADDRESS = '0x...'  # Replace with your smart contract address
-# Infura RPC URL
-RPC_URL = 'https://sepolia.infura.io/v3/...'  # Replace with your Infura RPC URL
+
+# Wi-Fi
+WIFI_SSID = 'YOUR WIFI_SSID CREDENTIAL'
+WIFI_PASSWORD = 'YOUR WIFI_PASSWORD CREDENTIAL'
+
+# MQTT
+MQTT_BROKER = 'test.mosquitto.org'
+MQTT_PORT = 1883
+MQTT_CLIENT_NAME = 'Actor-1'
+MQTT_TOPIC_SUB = 'iot/master'
+MQTT_TOPIC_PUB = 'iot/Actor-1/status'
+MQTT_MASTER_RESET_COMMAND = 'Master: Actor-1 reset.'
+MQTT_ACTOR_STATUS_READY = 'Actor-1 is ready.'
+MQTT_ACTOR_STATUS_RESET = 'Actor-1 is reset.'
+MQTT_ACTOR_STATUS_ON = 'Actor-1 is on.'
+MQTT_ACTOR_STATUS_OFF = 'Actor-1 is off.'
+
+
+# MetaMask
+WALLET_ADDRESS = 'YOUR WALLET_ADDRESS CREDENTIAL'
+WALLET_PRIVATE_KEY = 'YOUR WALLET_PRIVATE_KEY CREDENTIAL'
+CONTRACT_ADDRESS = 'YOUR CONTRACT_ADDRESS CREDENTIAL'
+DATA = 'YOUR DATA CREDENTIAL'
+
+# Infura
+RPC_URL = 'https://sepolia.infura.io/v3/YOUR_RPC_URL'
