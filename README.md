@@ -17,6 +17,7 @@ The IoT system consists of the following main components:
 Hardware: 
 - ESP32 DevKitC,
 - LED
+  
 Software:
 - MicroPython with Mu Editor
 - MetaMask Wallet
