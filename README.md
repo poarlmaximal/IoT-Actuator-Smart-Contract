@@ -55,12 +55,26 @@ The IoT system consists of the following main components:
 
 ## 🔌 MQTT Communication
 
-| Topic              | Description                                        |
-|--------------------|--------------------------------------------------|
-| `iot/master`       | Receives control commands from the master module |
-| `iot/Actor-1/status` | Sends status updates (ready, on, off, reset)   |
-|--------------------|--------------------------------------------------|
+<table>
+  <thead style="background-color: #30363d; color: white;">
+    <tr>
+      <th>Topic</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>iot/master</code></td>
+      <td>Receives control commands from the master module</td>
+    </tr>
+    <tr>
+      <td><code>iot/Actor-1/status</code></td>
+      <td>Sends status updates (ready, on, off, reset)</td>
+    </tr>
+  </tbody>
+</table>
 
+## Testing & Debugging
 
 
 ### Voraussetzungen
