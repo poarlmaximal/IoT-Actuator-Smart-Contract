@@ -9,7 +9,7 @@ The IoT system consists of the following main components:
 - **MQTT Communication** for control and status updates
 - **External Master Control** (not included in this repository) that interacts with the actuator module
 ### Communication Channels
-- **MQTT:** The actuator module receives control commands on 'iot/master' and sends status updates on 'iot/Actor-1/status'.
+- **MQTT:** The actuator module receives control commands on `iot/master` and sends status updates on `iot/Actor-1/status`.
 - **Blockchain:** The actuator module queries the current LED state from the Smart Contract and can change it via a transaction.
 
 ## ⚙️ Setup & Installation
@@ -28,20 +28,20 @@ The IoT system consists of the following main components:
    - Install the required firmware (we used an older, stable version: esp32-20230426-v1.20.0.bin)
      
 **2. Deploy the Smart Contract:**
-   - Upload led_contract.sol to Remix IDE
+   - Upload `led_contract.sol` to Remix IDE
    - Compile the Smart Contract with Solidity Compiler
    - Deploy the Smart Contract via MetaMask to the Ethereum test network Sepolia
-   - Note the generated Smart Contract Address and Data (ABI for readLed())
+   - Note the generated Smart Contract Address and Data (ABI for `readLed()`)
      
 **3. Configure the Module:**
    - Enter your Wi-Fi credentials, Smart Contract address, Data and Infura API URL in config.py
 
 ## 🔧 Implementation
-### Smart Contract (led_contract.sol)
-- Contains the functions setLed(int8 newOn) and readLed()
+### Smart Contract (`led_contract.sol`)
+- Contains the functions `setLed(int8 newOn)` and `readLed()`
 - Allows switching the LED on/off and querying the current status
 
-### Actuator Module (main.py and config.py)
+### Actuator Module (`main.py` and `config.py`)
 main.py handles:
 - Wi-Fi connection
 - MQTT subscription and reaction to control commands
