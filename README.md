@@ -24,13 +24,15 @@ Software:
 - Infura API key for accessing the Ethereum test network (Sepolia)
 - Mosquitto MQTT Broker (public or local)
 ### Installation
-1. Prepare ESP32
+1. Prepare ESP32:
    - Install the required firmware (we used an older, stable version: esp32-20230426-v1.20.0.bin)
-2. Deploy the Smart Contract
+     
+2. Deploy the Smart Contract:
    - Upload led_contract.sol to Remix IDE
    - Compile the Smart Contract with Solidity Compiler
    - Deploy the Smart Contract via MetaMask to the Ethereum test network Sepolia
    - Note the generated Smart Contract Address and Data (ABI for readLed())
+     
 3. Configure the Module
    - Enter your Wi-Fi credentials, Smart Contract address, Data and Infura API URL in config.py
 
