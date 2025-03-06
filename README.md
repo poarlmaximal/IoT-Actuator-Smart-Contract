@@ -42,17 +42,22 @@ The IoT system consists of the following main components:
 - Allows switching the LED on/off and querying the current status
 
 ### Actuator Module (`main.py` and `config.py`)
-main.py handles:
+**`main.py` handles:**
 - Wi-Fi connection
 - MQTT subscription and reaction to control commands
 - Blockchain access for status verification and updates
 
-config.py stores key parameters:
+**`config.py` stores key parameters:**
 - Wi-Fi credentials
 - MQTT broker and topics
 - Smart Contract Information
 - Infura API URL
 
+## 🔌 MQTT Communication
+| Topic | Description |
+|:------:|:------------:|
+| iot/master | Receives control commands from the master module |
+| iot/Actor-1/status | Sends status updates (ready, on, off, reset) |
 
 ### Voraussetzungen
 
