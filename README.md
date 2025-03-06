@@ -1,5 +1,5 @@
-# IoT Actuator Module with Smart Contract
-## Project Description
+# :rocket: IoT Actuator Module with Smart Contract
+## :pushpin: Project Description
 This project is part of an IoT system for decentralized control of an actuator via a Smart Contract in an Ethereum test network. The actuator is controlled using an ESP32 module, which manages its state (on/off) through a Smart Contract. Communication is handled via MQTT for status exchange and Infura for blockchain interactions.
 
 ## System Architecture
@@ -12,7 +12,7 @@ The IoT system consists of the following main components:
 - **MQTT:** The actuator module receives control commands on 'iot/master' and sends status updates on 'iot/Actor-1/status'.
 - **Blockchain:** The actuator module queries the current LED state from the Smart Contract and can change it via a transaction.
 
-## Setup & Installation
+## 🏗️ Setup & Installation
 ### Requirements
 Hardware: 
 - ESP32 DevKitC,
