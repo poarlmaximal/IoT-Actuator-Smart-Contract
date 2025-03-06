@@ -54,10 +54,12 @@ The IoT system consists of the following main components:
 - Infura API URL
 
 ## 🔌 MQTT Communication
-| Topic | Description |
-|:------:|:------------:|
-| iot/master | Receives control commands from the master module |
-| iot/Actor-1/status | Sends status updates (ready, on, off, reset) |
+
+| Topic              | Description                                        |
+|--------------------|--------------------------------------------------|
+| `iot/master`       | Receives control commands from the master module |
+| `iot/Actor-1/status` | Sends status updates (ready, on, off, reset)   |
+
 
 ### Voraussetzungen
 
