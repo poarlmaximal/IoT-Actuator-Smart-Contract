@@ -8,10 +8,31 @@ The IoT system consists of the following main components:
 - **Ethereum Smart Contract** for decentralized state management
 - **MQTT Communication** for control and status updates
 - **External Master Control** (not included in this repository) that interacts with the actuator module
-
-## Communication Channels
+### Communication Channels
 - **MQTT:** The actuator module receives control commands on 'iot/master' and sends status updates on 'iot/Actor-1/status'.
 - **Blockchain:** The actuator module queries the current LED state from the Smart Contract and can change it via a transaction.
+
+## Setup & Installation
+### Requirements
+Hardware: 
+- ESP32 DevKitC,
+- LED
+Software:
+- MicroPython with Mu Editor
+- MetaMask Wallet
+- Infura API key for accessing the Ethereum test network (Sepolia)
+- Mosquitto MQTT Broker (public or local)
+### Installation
+1. Prepare ESP32
+   - Install the required firmware (we used an older, stable version: esp32-20230426-v1.20.0.bin)
+2. Deploy the Smart Contract
+   - Upload led_contract.sol to Remix IDE
+   - Compile the Smart Contract with Solidity Compiler
+   - Deploy the Smart Contract via MetaMask to the Ethereum test network Sepolia
+   - Note the generated Smart Contract Address and Data (ABI for readLed())
+3. Configure the Module
+   - Enter your Wi-Fi credentials, Smart Contract address, Data and Infura API URL in config.py
+
 
 
 ### Voraussetzungen
