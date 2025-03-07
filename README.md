@@ -55,64 +55,22 @@ The IoT system consists of the following main components:
 
 ## 🔌 MQTT Communication
 
-<table>
-  <thead style="background-color: #30363d; color: white;">
-    <tr>
-      <th>Topic</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>iot/master</code></td>
-      <td>Receives control commands from the master module</td>
-    </tr>
-    <tr>
-      <td><code>iot/Actor-1/status</code></td>
-      <td>Sends status updates (ready, on, off, reset)</td>
-    </tr>
-  </tbody>
-</table>
-
-## Testing & Debugging
+| Topic              | Description                                        |
+|--------------------|--------------------------------------------------|
+| `iot/master`       | Receives control commands from the master module |
+| `iot/Actor-1/status` | Sends status updates (ready, on, off, reset)   |
 
 
-### Voraussetzungen
+## 🧪 Testing & Debugging
+### MQTT Tests
+Use Mosquitto to test MQTT communication:
+`mosquitto_sub -h broker.hivemq.com -t "iot/Actor-1/status" -V "mqttv311" -v`
+`mosquitto_pub -h broker.hivemq.com -t "iot/master" -m "Master: Actor-1 reset." -V "mqttv311"`
 
-- **MetaMask**: Installiere die [MetaMask-Erweiterung](https://metamask.io/) für den Browser, um mit dem Ethereum-Testnetzwerk zu interagieren.
-- **Remix IDE**: Nutze die webbasierte Entwicklungsumgebung [Remix](https://remix.ethereum.org/) für den Smart Contract.
-- **MQTT-Client und Mosquitto**: Für die MQTT-Kommunikation wird der Mosquitto-Client verwendet (siehe [Mosquitto Download](https://mosquitto.org/download/)).
+### Blockchain Tests
+- Transactions can be verified via Etherscan
+- The current LED status can be queried using an eth_call request
 
-
-------------------------
-## Aktueller Stand des Smart Contracts
-Der Smart Contract ist fertiggestellt und implementiert die grundlegenden Funktionen zur Steuerung des Aktors: 
-
-- **setLed(int8 newOn)**: Setzt den Zustand der LED. newOn = 1 schaltet die LED ein, newOn = 0 schaltet sie aus.
-- **readLed()**: Gibt den aktuellen Zustand der LED zurück.
-- **retrieveEther()**: Ermöglicht dem Besitzer des Contracts, Ether abzuheben.
-- **kill()**: Entfernt den Contract aus der Blockchain.
-
-Der Contract ist für das Sepolia Testnetzwerk vorbereitet und wird in der Entwicklungsumgebung [Remix](https://remix.ethereum.org/) getestet. Eine detaillierte Anleitung zur Verwendung und Testung findet sich in [todo/doing]. 
-
-## Aktueller Stand des main.py Skripts (der Schleifendurchlauf in der Main muss noch angepasst werden, ist jetzt erstmal für Testzwecke so wie es ist)
-
-- **Initialisierung**: Das Skript importiert benötigte Bibliotheken und eine Konfigurationsdatei. Das LED wird als Ausgangspin konfiguriert.
-- **WLAN-Verbindung**: Es stellt eine Verbindung zum WLAN her, indem es SSID und Passwort aus der Konfigurationsdatei verwendet. Eine Wartezeit ist eingebaut, bis die Verbindung erfolgreich ist.
-- **MQTT-Kommunikation**:
-  - Ein MQTT-Client wird initialisiert und eine Callback-Funktion für eingehende Nachrichten definiert.
-  - Die Callback-Funktion on_message() ermöglicht das Ein- und Ausschalten des LEDs basierend auf den empfangenen MQTT-Nachrichten.
-  - Der MQTT-Client verbindet sich mit dem Broker, abonniert einen Kanal für Nachrichten und startet eine Schleife zur Nachrichtenbehandlung.
-- **Feedback über MQTT**:
-  - Sendet eine Bereitschaftsnachricht, sobald das WLAN und MQTT konfiguriert sind.
-  - Während der Hauptfunktionsschleife wird der LED-Status (ein/aus) abwechselnd geändert und der Status wird nach jedem Schritt zurück an den MQTT-Broker gesendet.
-- **Main-Schleifensteuerung**:
-  - Eine Schleife führt die Ein- und Ausschaltung des LEDs durch, begleitet von Statusmeldungen, und zählt bis zu einer maximalen Anzahl von Durchläufen (30).
-  - Nach Beendigung der Schleife sendet das Gerät eine finale Statusmeldung.
-
-
-------------------------------
-## Todo: 
-bis 02.12. 18:00 - 19:00 Uhr
-- Config.py lokal mit den korrekten Credentials befüllen und dann led-blinking-test.py testen und anschließend main.py testen.
-- Über Mosquitto mitschneiden ? 
+## 📜 License 
+- This project was developed as part of an IoT practicum
+- License: MIT License
