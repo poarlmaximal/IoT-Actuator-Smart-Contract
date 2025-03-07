@@ -64,7 +64,9 @@ The IoT system consists of the following main components:
 ## 🧪 Testing & Debugging
 ### MQTT Tests
 Use Mosquitto to test MQTT communication:
+
 `mosquitto_sub -h broker.hivemq.com -t "iot/Actor-1/status" -V "mqttv311" -v`
+
 `mosquitto_pub -h broker.hivemq.com -t "iot/master" -m "Master: Actor-1 reset." -V "mqttv311"`
 
 ### Blockchain Tests
